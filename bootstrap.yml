@@ -1,0 +1,50 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (CentOS)
+    tags: always
+    dnf:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+
+#  - ansible.builtin.apt: # Perform apt-get clean all
+#      clean: yes
+#    when: ansible_distribution == "Ubuntu"
+
+  - name: install updates (ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create vasdas user
+    tags: always
+    user:
+      name: vasdas
+      groups: root
+
+  - name: add ssh key for vasdas
+    tags: always
+    authorized_key:
+      user: vasdas
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbOFm9Z6+A5DRjUDepMUsaePg5K6v/zOBcqRjEGpl0I ansible"
+
+  - name: add sudoers file for vasdas
+    tags: always
+    copy:
+      src: sudoers_vasdas
+      dest: /etc/sudoers.d/vasdas
+      owner: root
+      group: root
+      mode: 0440
+

@@ -5,7 +5,7 @@
 
 [web_servers]
 192.168.48.68
-192.168.48.76 ansible_user=systemj
+192.168.48.76
 
 [db_servers]
 192.168.48.95
