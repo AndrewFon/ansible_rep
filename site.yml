@@ -16,53 +16,30 @@
     apt:
       update_cache: yes
     changed_when: false
-    when: ansible_distribution == "Ubuntu"
+    when: ansible_distribution == "Ubuntu" or ansible_distribution == "Debian"
 
 - hosts: all
   become: true
   tasks:
 
-  - name: add ssh key for vasdas
-    tags: always
-    authorized_key:
-      user: vasdas
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbOFm9Z6+A5DRjUDepMUsaePg5K6v/zOBcqRjEGpl0I ansible"
-
 
 - hosts: web_servers
   become: true
-  tasks:
+  roles:
+    - workstations
 
-  - name: start httpd (CentOS)
-    tags: apache,centos,https
-    service:
-      name: httpd
-      state: started
-    when: ansible_distribution == "CentOS"
+- hosts: db_servers
+  become: true
+  roles:
+    - db_servers
 
-  - name: change e-mail address for admin
-    tags: apache, centos, httpd
-    lineinfile:
-      path: /etc/httpd/conf/httpd.conf
-      regexp: '^ServerAdmin'
-      line: ServerAdmin andreif@procuredox.com
-    when: ansible_distribution == "CentOS"
-    register: httpd
+- hosts: file_servers
+  become: true
+  roles:
+    - file_servers
 
-  - name: restart httpd (CentOS)
-    tags: apache, centos, httpd
-    service:
-      name: httpd
-      state: restarted
-      enabled: yes
-    when: httpd.changed
+- hosts: workstations
+  become: true
+  roles:
+    - workstations
 
-
-  - name: copy default html file for site
-    tags: apache, apache2
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644

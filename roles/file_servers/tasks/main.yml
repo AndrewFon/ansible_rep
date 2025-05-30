@@ -1,0 +1,13 @@
+#- name: Update apt repo and cache on Debian
+#  apt: update-cache=yes force_apt_get=yes
+#  when: ansible_distribution == 'Debian'
+
+#- name: Upgrade all packages
+#  apt: upgrade=dist force_apt_get=yes
+#  when: ansible_distribution == 'Debian'
+
+- name: install samba package
+  tags: samba
+  package:
+    name: samba
+    state: latest

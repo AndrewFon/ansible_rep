@@ -1,0 +1,4 @@
+- name: add ssh key for vasdas
+  authorized_key:
+    user: vasdas
+    key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbOFm9Z6+A5DRjUDepMUsaePg5K6v/zOBcqRjEGpl0I ansible"
